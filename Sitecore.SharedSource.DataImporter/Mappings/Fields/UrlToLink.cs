@@ -1,4 +1,6 @@
-﻿using Sitecore.Data.Fields;
+﻿using System;
+using Sitecore.Data;
+using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
 
@@ -30,10 +32,34 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         {
             //get the field as a link field and store the url
             LinkField lf = newItem.Fields[NewItemField];
-			if(lf != null)
-                lf.Url = importValue;
-		}
+            if (lf != null)
+            {
+                Guid importedGuidLink;
+                if (IsSitecoreInternalLink(importValue, out importedGuidLink))
+                {
+                    ID importedSitecoreId = new ID(importedGuidLink);
+                    lf.TargetID = importedSitecoreId;
+                    lf.LinkType = "internal";
+                }
+                else
+                {
+                    lf.Url = importValue;
+                }
+            }
+        }
 
-		#endregion Methods
+        /// <summary>
+        /// if we can parse this as a guid then assume we're importing a Sitecore item; this is useful if you are importing a list
+        /// of 301 redirects where the Sitecore content already exists but the 301 redirect doesn't
+        /// </summary>
+        /// <param name="importValue"></param>
+        /// <param name="importedGuidLink"></param>
+        /// <returns></returns>
+        private bool IsSitecoreInternalLink(string importValue, out Guid importedGuidLink)
+        {
+            return Guid.TryParse(importValue, out importedGuidLink);
+        }
+
+        #endregion Methods
 	}
 }
