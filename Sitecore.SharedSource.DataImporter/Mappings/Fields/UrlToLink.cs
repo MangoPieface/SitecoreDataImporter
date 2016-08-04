@@ -4,29 +4,28 @@ using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
 using Sitecore.SharedSource.DataImporter.Providers;
 
-namespace Sitecore.SharedSource.DataImporter.Mappings.Fields 
-{	
+namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
+{
     /// <summary>
     /// this field uses the url stored in the field and converts it to a LinkField value
     /// </summary>
-
-    public class UrlToLink : ToText 
+    public class UrlToLink : ToText
     {
-		#region Properties 
+        #region Properties 
 
-		#endregion Properties
-		
-		#region Constructor
+        #endregion Properties
 
-		//constructor
-		public UrlToLink(Item i)
-			: base(i) {
-			
-		}
+        #region Constructor
 
-		#endregion Constructor
-		
-		#region Methods
+        //constructor
+        public UrlToLink(Item i)
+            : base(i)
+        {
+        }
+
+        #endregion Constructor
+
+        #region Methods
 
         public override void FillField(BaseDataMap map, ref Item newItem, string importValue)
         {
@@ -37,8 +36,7 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
                 Guid importedGuidLink;
                 if (IsSitecoreInternalLink(importValue, out importedGuidLink))
                 {
-                    ID importedSitecoreId = new ID(importedGuidLink);
-                    lf.TargetID = importedSitecoreId;
+                    lf.TargetID = new ID(importedGuidLink);
                     lf.LinkType = "internal";
                 }
                 else
@@ -49,8 +47,9 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         }
 
         /// <summary>
-        /// if we can parse this as a guid then assume we're importing a Sitecore item; this is useful if you are importing a list
-        /// of 301 redirects where the Sitecore content already exists but the 301 redirect doesn't
+        /// if we can parse this as a guid then assume we're importing a Sitecore item; 
+        /// this is useful if you are importing a list  of 301 redirects where the Sitecore content already exists 
+        /// but the 301 redirect doesn't
         /// </summary>
         /// <param name="importValue"></param>
         /// <param name="importedGuidLink"></param>
@@ -61,5 +60,5 @@ namespace Sitecore.SharedSource.DataImporter.Mappings.Fields
         }
 
         #endregion Methods
-	}
+    }
 }
